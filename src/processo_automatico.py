@@ -1,5 +1,5 @@
 from datetime import timedelta
-from .app import App
+from src.app import App
 
 app = App()
 
