@@ -35,5 +35,5 @@ Requer python 3.6 e pipenv
     * Windows `.venv\Scripts\activate`
     * Linux ou Mac `source .venv\bin\activate`
 * Instale as dependências `pipenv install`
-* Crie o arquivo de configuração
+* Crie o arquivo de configuração `.env` ([Exemplo](#configuracao))
 * Rode a aplicação `python src/processo_automatico.py`
