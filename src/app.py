@@ -3,7 +3,7 @@ from O365 import Message
 from decouple import config
 
 
-class Config(object):
+class App(object):
 
     def __init__(self):
         self._host = config('DB_HOST')

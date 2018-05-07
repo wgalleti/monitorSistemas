@@ -1,7 +1,7 @@
 from datetime import timedelta
-from config import Config
+from .app import App
 
-app = Config()
+app = App()
 
 sql = "SELECT * FROM E000LPA ORDER BY DATINI, HORINI"
 dsql = 'DELETE E000LPA WHERE CODPRA = :regra AND SEQLOG = :seq'
