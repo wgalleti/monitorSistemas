@@ -34,3 +34,4 @@ for i in app.query(sql, dict()):
 
 subject = 'Erro ao executar processo automático'
 app.send_mail(subject, body.format(erros=err))
+app.disconnect()

@@ -33,3 +33,4 @@ for i in app.query(sql, dict()):
 
 subject = 'Erros na integração'
 app.send_mail(subject, body.format(erros=err))
+app.disconnect()
