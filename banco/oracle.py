@@ -1,47 +1,31 @@
 import cx_Oracle
-from O365 import Message
 from decouple import config
 
 
-class App(object):
+class Database:
 
     def __init__(self):
-        """
-        Inicializa classe app recebendo informações do arquivo .env e inicia conexão
-        """
-        self._host = config('DB_HOST')
-        self._port = config('DB_PORT')
-        self._service = config('DB_SERVICE')
-        self._user = config('DB_USER')
-        self._pass = config('DB_PASS')
-        self._user_email = config('EMAIL_USER')
-        self._pass_email = config('EMAIL_PASS')
-        self._to_email = config('EMAIL_TO')
+        self.host = config('DB_HOST')
+        self.port = config('DB_PORT')
+        self.service = config('DB_SERVICE')
+        self.user = config('DB_USER')
+        self.pwd = config('DB_PASS')
 
-        self.make_connection()
+        self.connection(rac=True)
 
-    def _make_tns(self):
-        """
-        Monta TNS de conexão
-        """
-        self.tns = cx_Oracle.makedsn(self._host, self._port, service_name=self._service)
+    def tns(self):
+        self.tns = cx_Oracle.makedsn(self.host, self.port, service_name=self.service)
 
-    def make_connection(self):
-        """
-        Inicia conexão com banco de dados ou finaliza aplicação
-        """
-        self._make_tns()
+    def connection(self, rac=False):
+        self.tns()
         try:
-            self.connection = cx_Oracle.connect(self._user, self._pass, self.tns, threaded=True)
+            self.connection = cx_Oracle.connect(self.user, self.pwd, self.tns, threaded=rac)
         except cx_Oracle.DatabaseError as e:
             self.connection = None
             print(e)
             exit(1)
 
     def disconnect(self):
-        """
-        Disconecta do banco de dados
-        """
         self.connection.close()
 
     def delete(self, sql, filter):
@@ -86,18 +70,3 @@ class App(object):
                     data[i[0]][c] = data[i[0]][c].read()
 
         return data
-
-    def send_mail(self, subject, body):
-        """
-        Envia email
-        :param subject: titulo de mensagem
-        :param body: corpo do email
-        :return: objeto de email
-        """
-        m = Message(auth=(self._user_email, self._pass_email))
-        m.setRecipients(self._to_email)
-        m.setSubject(subject)
-        m.setBodyHTML(body)
-        m.sendMessage()
-
-        return m

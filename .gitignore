@@ -3,6 +3,7 @@
 .envdev
 .idea
 .venv
+.monitor
 *.sqlite3
 *pyc
 logs
