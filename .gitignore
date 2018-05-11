@@ -6,7 +6,6 @@
 .monitor
 *.sqlite3
 *pyc
-logs
 .ipynb_checkpoints
 *.ipynb
 static/
