@@ -9,28 +9,25 @@ mail = Email365()
 
 sql = """
     SELECT C.SECONDS_IN_WAIT AS TEMPO,
+           C.SID,
            A.SESSION_ID || ',' || SERIAL# || ',@' || C.INST_ID AS SESSIONID,
            B.OBJECT_NAME AS OBJETO,
-           C.MACHINE || ' - ' || A.OS_USER_NAME AS MAQUINA,
+           C.MACHINE AS MAQUINA,
+           A.OS_USER_NAME AS USUARIO,
            A.ORACLE_USERNAME AS ORACLEDB,
-           NVL(C.LOCKWAIT, 'Active') AS TIPOESPERA,
-           DECODE(A.LOCKED_MODE,
-                  2, 'Registro Compartilhado',
-                  3, 'Registro Exclusivo',
-                  4, 'Compartilhado',
-                  5, 'Compartilhando registro Exclusivo',
-                  6, 'Exclusivo',
-                  'Desconhecido') AS LOCKMODO,
+           B.OBJECT_NAME AS OBJETO,
            B.OBJECT_TYPE AS OBJETOTIPO,
            C.PROCESS AS PROCESSO,
-           C.INST_ID AS INSTANCIA,
-           'ALTER SYSTEM KILL SESSION ''' || A.SESSION_ID || ',' || SERIAL# || ',@' || C.INST_ID || ''' IMMEDIATE' AS KILL_COMMAND,
-           C.PREV_SQL_ADDR AS SQL_ADDRESS
+           C.INST_ID AS RAC,
+           C.SQL_ADDRESS,
+           C.PREV_SQL_ID,
+           'ALTER SYSTEM KILL SESSION ''' || A.SESSION_ID || ',' || SERIAL# || ',@' || C.INST_ID || ''' IMMEDIATE' AS COMANDO
       FROM SYS.GV_$LOCKED_OBJECT A,
            SYS.ALL_OBJECTS B,
            SYS.GV_$SESSION C
      WHERE A.OBJECT_ID = B.OBJECT_ID
-       AND C.SID = A.SESSION_ID
+       AND A.INST_ID = C.INST_ID
+       AND C.SID = A.SESSION_ID   
        AND C.SECONDS_IN_WAIT >= 90
      ORDER BY SECONDS_IN_WAIT DESC, 5 DESC
 """
@@ -38,21 +35,35 @@ sql_id = """
     SELECT SQL_TEXT, 
            SQL_FULLTEXT 
       FROM SYS.GV_$SQL 
-     WHERE ADDRESS = :sql_address
+     WHERE SQL_ID = :sql_id
 """
 body = """
     <h1Locks no banco de dados</h1>
     Foram encontrados {locks} locks no banco de dados:
 """
 message = """
-    <h3> Maquina / Usuário {usuario}</h3>
     <br>
-    <small>Banco {banco}</small>
-    <br>
-    <small>Tempo em execução {tempo}</small>
+    <h3>Sessão {sessao} em {maquina} para {usuario}</h3>
+    <table border="1" cellpadding="1" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 80%;">
+        <tbody>
+            <tr>
+                <td>Objeto</td>
+                <td>Tempo em Execução</td>
+                <td>Banco de Dados</td>
+                <td>Rac</td>
+            </tr>
+            <tr>
+                <td>{objeto}</td>
+                <td>{tempo}</td>
+                <td>{banco}</td>
+                <td>{rac}</td>
+            </tr>
+        </tbody>
+    </table>
     <br>
     <small>Para encessar essa sessão, execute o comando <b>{comando}</b></small>
     <br>
+    SQL em execução:
     <pre>{sql}</pre>
     <hr>
 """
@@ -62,13 +73,17 @@ for i in db.query(sql, dict()):
     locks += 1
     run_sql = None
     if i['sql_address'] is not None:
-        for s in db.query(sql_id, dict(sql_address=i['sql_address'])):
+        for s in db.query(sql_id, dict(sql_id=i['prev_sql_id'])):
             run_sql = sqlparse.format(s['sql_fulltext'].lower(), reindent=True, keyword_case='upper')
-    body += message.format(usuario=i['maquina'],
-                           tempo=str(timedelta(seconds=i['tempo'])),
-                           banco=i['oracledb'],
-                           comando=i['kill_command'],
-                           sql=run_sql)
+    body += message.format(maquina=i['maquina'],
+                              usuario=i['usuario'],
+                              objeto=i['objeto'],
+                              sessao=i['sid'],
+                              tempo=str(timedelta(seconds=i['tempo'])),
+                              banco=i['oracledb'],
+                              rac=i['rac'],
+                              comando=i['comando'],
+                              sql=run_sql)
 
 subject = 'Locks no banco de dados'
 db.disconnect()
@@ -92,4 +107,3 @@ if locks > 0:
     except:
         print(f'Erro ao enviar o email {mail.error}')
         exit(1)
-
