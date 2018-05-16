@@ -22,6 +22,9 @@ class Email365:
         m.setRecipients(self.to_email)
         m.setSubject(subject)
         m.setBodyHTML(body)
-        m.sendMessage()
+        try:
+            m.sendMessage()
+        except Exception as e:
+            self.error = f'Falha ao enviar o email{e}'
 
-        return m
+
