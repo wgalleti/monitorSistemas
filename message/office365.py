@@ -1,8 +1,8 @@
 from O365 import Message
 from decouple import config
 
-class Email365:
 
+class Email365:
     def __init__(self):
         """
         Inicializa classe app recebendo informações do arquivo .env e inicia conexão
@@ -26,5 +26,3 @@ class Email365:
             m.sendMessage()
         except Exception as e:
             self.error = f'Falha ao enviar o email{e}'
-
-

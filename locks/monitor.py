@@ -39,6 +39,6 @@ body += EMAIL_FOOTER
 if locks > 0:
     try:
         mail.send(subject, body.format(locks=locks))
-    except:
-        print(f'Erro ao enviar o email {mail.error}')
+    except Exception as e:
+        print(f'Erro ao enviar o email {mail.error}. Erro: {e}')
         exit(1)

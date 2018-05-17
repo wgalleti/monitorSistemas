@@ -11,14 +11,15 @@ SELECT C.SECONDS_IN_WAIT AS TEMPO,
        C.INST_ID AS RAC,
        C.SQL_ADDRESS,
        C.PREV_SQL_ID,
-       'ALTER SYSTEM KILL SESSION ''' || A.SESSION_ID || ',' || SERIAL# || ',@' || C.INST_ID || ''' IMMEDIATE' AS COMANDO,
+       'ALTER SYSTEM KILL SESSION ''' || A.SESSION_ID || ',' ||
+       SERIAL# || ',@' || C.INST_ID || ''' IMMEDIATE' AS COMANDO,
        COUNT(1) AS QTD_LOCKED
   FROM SYS.GV_$LOCKED_OBJECT A,
        SYS.ALL_OBJECTS B,
        SYS.GV_$SESSION C
  WHERE A.OBJECT_ID = B.OBJECT_ID
    AND A.INST_ID = C.INST_ID
-   AND C.SID = A.SESSION_ID   
+   AND C.SID = A.SESSION_ID
    AND C.SECONDS_IN_WAIT >= 90
  GROUP BY C.SECONDS_IN_WAIT,
           C.SID,
@@ -36,9 +37,9 @@ SELECT C.SECONDS_IN_WAIT AS TEMPO,
 """
 
 SQL_SQLID = """
-SELECT SQL_TEXT, 
-       SQL_FULLTEXT 
-  FROM SYS.GV_$SQL 
+SELECT SQL_TEXT,
+       SQL_FULLTEXT
+  FROM SYS.GV_$SQL
  WHERE SQL_ID = :sql_id
 """
 
@@ -50,21 +51,74 @@ Foram encontrados {locks} locks no banco de dados:
 EMAIL_MESSAGE = """
 <br>
 <h3>Sessão {sessao} em {maquina} para {usuario}</h3>
-<table width="94%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
-    <tbody>
-        <tr>
-            <td align="left" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;">Objeto(s)</td>
-            <td align="left" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;">Tempo em Execução</td>
-            <td align="left" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;">Banco de Dados</td>
-            <td align="left" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;">Rac</td>
-        </tr>
-        <tr>
-            <td align="left" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;">{objeto}</td>
-            <td align="left" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;">{tempo}</td>
-            <td align="left" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;">{banco}</td>
-            <td align="left" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;">{rac}</td>
-        </tr>
-    </tbody>
+<table
+  width="94%"
+  border="0"
+  cellpadding="0"
+  cellspacing="0"
+  style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
+  <tbody>
+    <tr>
+      <td
+        align="left"
+        bgcolor="#252525"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;"
+      >
+        Objeto(s)
+      </td>
+      <td
+        align="left"
+        bgcolor="#252525"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;"
+      >
+        Tempo de Execução
+      </td>
+      <td
+        align="left"
+        bgcolor="#252525"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;"
+      >
+        Banco de Dados
+      </td>
+      <td
+        align="left"
+        bgcolor="#252525"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;"
+      >
+        Rac
+      </td>
+    </tr>
+    <tr>
+      <td
+        align="left"
+        bgcolor="#FFFFFF"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;"
+      >
+        {objeto}
+      </td>
+      <td
+        align="left"
+        bgcolor="#FFFFFF"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;"
+      >
+        {tempo}
+      </td>
+      <td
+        align="left"
+        bgcolor="#FFFFFF"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;"
+      >
+        {banco}
+      </td>
+      <td
+        align="left"
+        bgcolor="#FFFFFF"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;"
+      >
+        {rac}
+      </td>
+    </tr>
+  </tbody>
 </table>
 <br>
 <small>Para encessar essa sessão, execute o comando <b>{comando}</b></small>
