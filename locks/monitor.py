@@ -1,7 +1,7 @@
 from banco.oracle import Database
 from message.office365 import Email365
 from datetime import timedelta
-from .config import SQL_LOCKS, SQL_SQLID, EMAIL_BODY, EMAIL_MESSAGE, EMAIL_FOOTER
+from locks.config import SQL_LOCKS, SQL_SQLID, EMAIL_BODY, EMAIL_MESSAGE, EMAIL_FOOTER
 
 import sqlparse
 
