@@ -11,17 +11,17 @@ sql = """
     SELECT C.SECONDS_IN_WAIT AS TEMPO,
            C.SID,
            A.SESSION_ID || ',' || SERIAL# || ',@' || C.INST_ID AS SESSIONID,
-           B.OBJECT_NAME AS OBJETO,
            C.MACHINE AS MAQUINA,
            A.OS_USER_NAME AS USUARIO,
            A.ORACLE_USERNAME AS ORACLEDB,
-           B.OBJECT_NAME AS OBJETO,
+           TO_CHAR(WM_CONCAT(B.OBJECT_NAME)) AS OBJETOS,
            B.OBJECT_TYPE AS OBJETOTIPO,
            C.PROCESS AS PROCESSO,
            C.INST_ID AS RAC,
            C.SQL_ADDRESS,
            C.PREV_SQL_ID,
-           'ALTER SYSTEM KILL SESSION ''' || A.SESSION_ID || ',' || SERIAL# || ',@' || C.INST_ID || ''' IMMEDIATE' AS COMANDO
+           'ALTER SYSTEM KILL SESSION ''' || A.SESSION_ID || ',' || SERIAL# || ',@' || C.INST_ID || ''' IMMEDIATE' AS COMANDO,
+           COUNT(1) AS QTD_LOCKED
       FROM SYS.GV_$LOCKED_OBJECT A,
            SYS.ALL_OBJECTS B,
            SYS.GV_$SESSION C
@@ -29,6 +29,18 @@ sql = """
        AND A.INST_ID = C.INST_ID
        AND C.SID = A.SESSION_ID   
        AND C.SECONDS_IN_WAIT >= 90
+     GROUP BY C.SECONDS_IN_WAIT,
+              C.SID,
+              A.SESSION_ID || ',' || SERIAL# || ',@' || C.INST_ID,
+              C.MACHINE,
+              A.OS_USER_NAME,
+              A.ORACLE_USERNAME,
+              B.OBJECT_TYPE,
+              C.PROCESS,
+              C.INST_ID,
+              C.SQL_ADDRESS,
+              C.PREV_SQL_ID,
+              'ALTER SYSTEM KILL SESSION ''' || A.SESSION_ID || ',' || SERIAL# || ',@' || C.INST_ID || ''' IMMEDIATE'
      ORDER BY SECONDS_IN_WAIT DESC, 5 DESC
 """
 sql_id = """
@@ -38,25 +50,25 @@ sql_id = """
      WHERE SQL_ID = :sql_id
 """
 body = """
-    <h1Locks no banco de dados</h1>
+    <h1>Locks no banco de dados</h1>
     Foram encontrados {locks} locks no banco de dados:
 """
 message = """
     <br>
     <h3>Sessão {sessao} em {maquina} para {usuario}</h3>
-    <table border="1" cellpadding="1" cellspacing="0" class="body" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 80%;">
+    <table width="94%" border="0" cellpadding="0" cellspacing="0" style="border-collapse: separate; mso-table-lspace: 0pt; mso-table-rspace: 0pt;">
         <tbody>
             <tr>
-                <td>Objeto</td>
-                <td>Tempo em Execução</td>
-                <td>Banco de Dados</td>
-                <td>Rac</td>
+                <td align="left" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;">Objeto(s)</td>
+                <td align="left" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;">Tempo em Execução</td>
+                <td align="left" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;">Banco de Dados</td>
+                <td align="left" bgcolor="#252525" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px; padding-right:0;">Rac</td>
             </tr>
             <tr>
-                <td>{objeto}</td>
-                <td>{tempo}</td>
-                <td>{banco}</td>
-                <td>{rac}</td>
+                <td align="left" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;">{objeto}</td>
+                <td align="left" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;">{tempo}</td>
+                <td align="left" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;">{banco}</td>
+                <td align="left" bgcolor="#FFFFFF" style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px; padding-right:0;">{rac}</td>
             </tr>
         </tbody>
     </table>
@@ -76,14 +88,14 @@ for i in db.query(sql, dict()):
         for s in db.query(sql_id, dict(sql_id=i['prev_sql_id'])):
             run_sql = sqlparse.format(s['sql_fulltext'].lower(), reindent=True, keyword_case='upper')
     body += message.format(maquina=i['maquina'],
-                              usuario=i['usuario'],
-                              objeto=i['objeto'],
-                              sessao=i['sid'],
-                              tempo=str(timedelta(seconds=i['tempo'])),
-                              banco=i['oracledb'],
-                              rac=i['rac'],
-                              comando=i['comando'],
-                              sql=run_sql)
+                           usuario=i['usuario'],
+                           objeto=i['objetos'],
+                           sessao=i['sid'],
+                           tempo=str(timedelta(seconds=i['tempo'])),
+                           banco=i['oracledb'],
+                           rac=i['rac'],
+                           comando=i['comando'],
+                           sql=run_sql)
 
 subject = 'Locks no banco de dados'
 db.disconnect()
