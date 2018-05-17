@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gruposcheffer/monitorSistemas.svg?branch=master)](https://travis-ci.org/gruposcheffer/monitorSistemas)
+
 # Monitoramento de rotinas importantes dos Sistemas
 
 * ERP (Logs de processo automático)
