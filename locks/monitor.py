@@ -25,13 +25,10 @@ class Monitor:
         self.body = self.body.format(locks=self.locks) + self.footer
 
         if self.locks > 0:
-            self.send_email()
-
-    def send_email(self):
-        try:
-            self.mail.send(self.subject, self.body)
-        except Exception as e:
-            print(f'Erro ao enviar o email {self.mail.error}. Erro: {e}')
+            try:
+                self.mail.send(self.subject, self.body)
+            except Exception as e:
+                print(f'Erro ao enviar o email {self.mail.error}. Erro: {e}')
 
     def load_locks(self):
         yield [self.mount_message(self.parse_lock(i)) for i in self.db.query(self.sql, dict(), log=True)]
