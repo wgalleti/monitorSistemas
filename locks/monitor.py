@@ -5,40 +5,57 @@ from locks.config import SQL_LOCKS, SQL_SQLID, EMAIL_BODY, EMAIL_MESSAGE, EMAIL_
 
 import sqlparse
 
-db = Database()
-mail = Email365()
 
-sql = SQL_LOCKS
-sql_id = SQL_SQLID
+class Monitor:
+    sql = SQL_LOCKS
+    sql_id = SQL_SQLID
 
-body = EMAIL_BODY
-message = EMAIL_MESSAGE
-locks = 0
+    def __init__(self, subject):
+        self.mail = Email365()
+        self.db = Database()
 
-for i in db.query(sql, dict()):
-    locks += 1
-    run_sql = None
-    if i['sql_address'] is not None:
-        for s in db.query(sql_id, dict(sql_id=i['prev_sql_id'])):
-            run_sql = sqlparse.format(s['sql_fulltext'].lower(), reindent=True, keyword_case='upper')
-    body += message.format(maquina=i['maquina'],
-                           usuario=i['usuario'],
-                           objeto=i['objetos'],
-                           sessao=i['sid'],
-                           tempo=str(timedelta(seconds=i['tempo'])),
-                           banco=i['oracledb'],
-                           rac=i['rac'],
-                           comando=i['comando'],
-                           sql=run_sql)
+        self.body = EMAIL_BODY
+        self.message = EMAIL_MESSAGE
+        self.footer = EMAIL_FOOTER
+        self.subject = subject
+        self.locks = 0
 
-subject = 'Locks no banco de dados'
-db.disconnect()
+    def run(self):
+        self.body += ''.join(list(self.load_locks()))
+        self.body = self.body.format(locks=self.locks) + self.footer
 
-body += EMAIL_FOOTER
+        if self.locks > 0:
+            self.send_email()
 
-if locks > 0:
-    try:
-        mail.send(subject, body.format(locks=locks))
-    except Exception as e:
-        print(f'Erro ao enviar o email {mail.error}. Erro: {e}')
-        exit(1)
+    def send_email(self):
+        try:
+            self.mail.send(self.subject, self.body)
+        except Exception as e:
+            print(f'Erro ao enviar o email {self.mail.error}. Erro: {e}')
+
+    def load_locks(self):
+        yield [self.mount_message(self.parse_lock(i)) for i in self.db.query(self.sql, dict(), log=True)]
+
+    def parse_lock(self, lock):
+        self.locks += 1
+        lock['run_sql'] = None
+        if lock['sql_address'] is not None:
+            for s in self.db.query(self.sql_id, dict(sql_id=lock['prev_sql_id'])):
+                lock['run_sql'] = sqlparse.format(s['sql_fulltext'].lower(), reindent=True, keyword_case='upper')
+        return lock
+
+    def mount_message(self, data):
+        return self.message.format(maquina=data.get('maquina', None),
+                                   usuario=data.get('usuario', None),
+                                   objeto=data.get('objetos', None),
+                                   sessao=data.get('sid', None),
+                                   tempo=str(timedelta(seconds=data.get('tempo', 90))),
+                                   banco=data.get('oracledb', None),
+                                   rac=data.get('rac', None),
+                                   comando=data.get('comando', None),
+                                   sql=data.get('run_sql', None))
+
+
+if __name__ == '__main__':
+    monitor = Monitor('Locks no banco de dados')
+    monitor.run()
