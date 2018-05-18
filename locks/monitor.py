@@ -31,7 +31,7 @@ class Monitor:
                 print(f'Erro ao enviar o email {self.mail.error}. Erro: {e}')
 
     def load_locks(self):
-        yield [self.mount_message(self.parse_lock(i)) for i in self.db.query(self.sql, dict(), log=True)]
+        return (self.mount_message(self.parse_lock(i)) for i in self.db.query(self.sql, dict()))
 
     def parse_lock(self, lock):
         self.locks += 1
