@@ -4,13 +4,12 @@ from .models import Lock
 @admin.register(Lock)
 class LockAdmin(admin.ModelAdmin):
     list_display = [
-        'tempo',
-        'session_id',
-        'usuario',
+        'segundos',
+        'sessionid',
         'maquina',
-        'objetos',
-        'processo',
-        'locks',
-        'killed_user',
-        'killed_in'
+        'usuario',
+        'schema',
+        'objeto',
+        'tipo',
+        'rac',
     ]

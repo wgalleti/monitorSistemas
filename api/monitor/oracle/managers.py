@@ -1,24 +1,38 @@
 from django.db import models, connection
 from .helpers import custom_query
-from .queries import SQL_LOCKS
+from .queries import SQL_LOCKS, SQL_SQLID
 from datetime import timedelta
+import sqlparse
 
 
 class LockManager(models.Manager):
 
-    def locks(self, time=90):
-        return custom_query(SQL_LOCKS, [time])
+    def _load_sql(self, data):
+        for d in data:
+            data[d]['sql'] = ''
+            data[d]['segundos'] = str(timedelta(seconds=data[d]['segundos']))
+            if data[d]['sqlid'] is not None:
+                sql = custom_query(SQL_SQLID, [data[d]['sqlid'], data[d]['rac']])
+                data[d]['sql'] = [sqlparse.format(s['sql_fulltext'].lower(), reindent=True, keyword_case='upper') for s in sql][0] if len(sql) > 0 else ''
+            yield data[d]
+
+    def locks(self):
+        db = custom_query(SQL_LOCKS, [])
+
+        data = dict()
+        for i in db:
+            try:
+                if data[i['sessionid']]:
+                    data[i['sessionid']]['objeto'] += ', ' + i['objeto']
+            except KeyError:
+                data[i['sessionid']] = i
+
+        return list(self._load_sql(data))
 
     def locked(self, sessionid):
-        for lock in custom_query(SQL_LOCKS, [1]):
+        for lock in self.locks():
             if lock['sessionid'] == sessionid:
-                return dict(tempo=str(timedelta(seconds=lock['tempo'])),
-                            session_id=lock['sessionid'],
-                            maquina=lock['maquina'],
-                            usuario=lock['usuario'],
-                            objetos=lock['objetos'],
-                            processo=lock['processo'],
-                            locks=lock['qtd_locked'])
+                return lock
         return dict()
 
     def kill(self, session):
