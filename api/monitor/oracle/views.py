@@ -8,9 +8,7 @@ class LockViewSet(viewsets.ModelViewSet):
     serializer_class = LockSerializer
 
     def list(self, request, *args, **kwargs):
-        time = request.query_params.get('time', 90)
-        print(request.query_params)
-        locks = Lock.objects.locks(time)
+        locks = Lock.objects.locks()
         return response.Response(locks, status=200)
 
     def create(self, request, *args, **kwargs):
