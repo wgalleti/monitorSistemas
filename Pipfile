@@ -8,9 +8,19 @@ cx-oracle = "==6.0.3"
 "o365" = "*"
 python-decouple = "*"
 sqlparse = "*"
+django = "==1.11.7"
+dj-database-url = "*"
+"django-python3-ldap" = "*"
+django-extensions = "*"
+sqlformatter = "*"
+django-rest-auth = "*"
+djangorestframework = "*"
+django-filter = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 "flake8" = "*"
+notebook = "*"
 
 [requires]
 python_version = "3.6"
