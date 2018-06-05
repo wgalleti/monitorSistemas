@@ -11,7 +11,7 @@ class Email365:
         self.pwd = config('EMAIL_PASS')
         self.to_email = config('EMAIL_TO')
 
-    def send(self, subject, body):
+    def send(self, subject, body, to=None):
         """
         Envia email
         :param subject: titulo de mensagem
@@ -19,7 +19,10 @@ class Email365:
         :return: objeto de email
         """
         m = Message(auth=(self.user, self.pwd))
-        m.setRecipients(self.to_email)
+        emails = self.to_email if to is None else to
+
+        for i in emails.split(';'):
+            m.addRecipient(i)
         m.setSubject(subject)
         m.setBodyHTML(body)
         try:
