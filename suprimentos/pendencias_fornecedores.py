@@ -6,7 +6,8 @@ db = Database()
 mail = Email365()
 
 sql = """
-SELECT INITCAP(TRIM(FRN.NOMFOR)) AS FORNECEDOR,
+SELECT FRN.CODFOR AS FORNECEDOR_ID,
+       INITCAP(TRIM(FRN.NOMFOR)) AS FORNECEDOR,
        LOWER(FRN.INTNET) AS EMAIL,
        INITCAP(FIL.SIGFIL) AS FILIAL,
        IPO.NUMOCP AS ORDEM,
@@ -33,18 +34,17 @@ SELECT INITCAP(TRIM(FRN.NOMFOR)) AS FORNECEDOR,
    AND IPO.DATENT < TRUNC(SYSDATE) 
    AND NVL(TRIM(FRN.INTNET), ' ') <> ' '
    AND IPO.USUGER IN (464,396,212,532,109,562)
- ORDER BY 1, 3, 4, 6
+ ORDER BY 1, 2, 4, 5, 7
 """
 
 fornecedor = dict()
 for i in db.query(sql, []):
     try:
-
-        if fornecedor[i['fornecedor']]:
-            fornecedor[i['fornecedor']].append(i)
+        if fornecedor[f"{i['fornecedor']} - {i['fornecedor_id']}"]:
+            fornecedor[f"{i['fornecedor']} - {i['fornecedor_id']}"].append(i)
     except KeyError:
-        fornecedor[i['fornecedor']] = []
-        fornecedor[i['fornecedor']].append(i)
+        fornecedor[f"{i['fornecedor']} - {i['fornecedor_id']}"] = []
+        fornecedor[f"{i['fornecedor']} - {i['fornecedor_id']}"].append(i)
 
 db.disconnect()
 
