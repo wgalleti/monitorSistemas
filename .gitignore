@@ -10,3 +10,4 @@
 *.ipynb
 .vscode
 static/
+*.logs
