@@ -51,7 +51,7 @@ db.disconnect()
 for f in fornecedor:
     conteudo = body.format(fornecedor=f, pendencias=len(fornecedor[f]))
     conteudo += table_header
-    to = f"{fornecedor[f][0]['email']};gilberto.bonfim@gruposcheffer.com.br"
+    to = f"{fornecedor[f][0]['email']};compras@scheffer.agr.br"
     for i in fornecedor[f]:
         i['pedido'] = format_number(i['pedido'])
         i['entregue'] = format_number(i['entregue'])
