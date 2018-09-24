@@ -117,83 +117,130 @@ SELECT QUA.BENEFICIADORA AS BENEFICIADORA,
 """
 
 body = """
-    <h1>Resumo de Beneficiamento</h1>
-    <p>Esse é um resumo do ultimo turno da algodoeira. Essas informações poderão ser confirmadas no sistema Gatec.</p>
-    {tabela_resumo}
-    <hr>
-    <h2>Detalhes</h2>
-    {tabela_detalhes}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta name="viewport" content="width=device-width"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Boletim de informativo das Algodoeiras</title>
+    <link href="http://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet" type="text/css">
+</head>
+<body style="margin:0px; background: #FFFFFF; ">
+<div width="100%" style="background: #FFF; padding: 0px 0px; font-family:'Ubuntu'; line-height:28px; height:100%;  width: 100%; color: #009d92;">
+    <div style="padding:10px;  margin: 0px auto; font-size: 14px">
+        <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; margin-bottom: 20px">
+            <tbody>
+            <tr>
+                <td style="vertical-align: top; padding-bottom:30px;" align="center">
+                    <a href="http://financeiro.gruposcheffer.com" target="_blank">
+                        <img src="https://financeiro.gruposcheffer.com/static/logo_novo.png" alt="Scheffer"
+                             style="border:none">
+                    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+            <tbody>
+            <tr>
+                <td style="background:#383A37; padding:20px; color:#fff; text-align:center; font-weight: 700;">
+                    <h1>Boletim informativo das Algodoeiras</h1>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div style="padding: 10px; background: #FFF;">
+            <table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
+                <tbody>
+                <tr>
+                    <td style="text-align: center; font-size: 1.2em">
+                        {tabela_resumo}                       
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center; font-size: 1.2em">
+                        {tabela_detalhes}                       
+                    </td>
+                </tr>                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
 """
 
 tb_detalhe_row = """
 <tr>
   <td align="left"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {produtora}
   </td>
   <td align="left"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {fardao_id}
   </td>
   <td align="left"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {tipo_fardao}
   </td>
   <td align="left"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {talhao}
   </td>
   <td align="left"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {variedade}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {peso_algodao}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {peso_pluma}
   </td>
-  <td align="left"
+  <td align="center"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {primeiro_fardo}
   </td>
-  <td align="left"
+  <td align="center"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {ultimo_fardo}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {fardinhos}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {rendimento}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {peso_medio}
   </td>
 </tr>
 """
 
 tb_detalhe_header = """
-<h3>{algodoeira}</h3>
+<h2>{algodoeira}</h2>
 <table
-  width="94%"
+  width="100%"
   border="0"
   cellpadding="0"
   cellspacing="0"
@@ -202,84 +249,84 @@ tb_detalhe_header = """
     <tr>
       <td
         align="left"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Fazenda Produtora
       </td>
       <td
         align="left"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Fardão
       </td>
       <td
         align="left"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Tipo
       </td>
       <td
         align="left"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Talhão
       </td>
       <td
         align="left"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Variedade
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Peso de Algodão
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Peso Pluma
       </td>
       <td
-        align="left"
-        bgcolor="#252525"
+        align="center"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Primeiro Fardinho
       </td>
       <td
-        align="right"
-        bgcolor="#252525"
+        align="center"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Ultimo Fardinho
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Fardinhos Produzido
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Rendimento
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Peso Médio
@@ -294,47 +341,47 @@ tb_resumo_row = """
 <tr>
   <td align="left"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {beneficiadora}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {fardoes}
   </td>
   <td align="left"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {talhoes}
   </td>
   <td align="left"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {variedades}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {peso_algodao}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {peso_pluma}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {fardinhos}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {rendimento}
   </td>
   <td align="right"
       bgcolor="#FFFFFF"
-      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #252525; padding:10px;">
+      style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #383A37; padding:10px;">
     {peso_medio}
   </td>
 </tr>
@@ -342,7 +389,7 @@ tb_resumo_row = """
 
 tb_resumo_header = """
 <table
-  width="94%"
+  width="100%"
   border="0"
   cellpadding="0"
   cellspacing="0"
@@ -351,74 +398,141 @@ tb_resumo_header = """
     <tr>
       <td
         align="left"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Beneficiadora
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Fardões
       </td>
       <td
         align="left"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Talhões
       </td>
       <td
         align="left"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Variedades
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Peso de Algodão
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Peso Pluma
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Fardinhos Produzido
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Rendimento
       </td>
       <td
         align="right"
-        bgcolor="#252525"
+        bgcolor="#383A37"
         style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
       >
         Peso Médio
       </td>
     </tr>
     {itens}
+    {totais}
   </tbody>
 </table>
 """
 
-
+tb_resumo_footer = """
+<tr>
+      <td
+        align="left"
+        bgcolor="#383A37"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
+      >
+        Totais
+      </td>
+      <td
+        align="right"
+        bgcolor="#383A37"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
+      >
+        {fardoes}
+      </td>
+      <td
+        align="left"
+        bgcolor="#383A37"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
+      >
+        &nbsp;
+      </td>
+      <td
+        align="left"
+        bgcolor="#383A37"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
+      >
+        &nbsp;
+      </td>
+      <td
+        align="right"
+        bgcolor="#383A37"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
+      >
+        {peso_algodao}
+      </td>
+      <td
+        align="right"
+        bgcolor="#383A37"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
+      >
+        {peso_pluma}
+      </td>
+      <td
+        align="right"
+        bgcolor="#383A37"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
+      >
+        {fardos_produzido}
+      </td>
+      <td
+        align="right"
+        bgcolor="#383A37"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
+      >
+        {rendimento}
+      </td>
+      <td
+        align="right"
+        bgcolor="#383A37"
+        style="font-family: Verdana, Geneva, Helvetica, Arial, sans-serif; font-size: 12px; color: #EEEEEE; padding:10px;"
+      >
+        {peso_medio}
+      </td>
+    </tr>
+"""
 
 
 def format_number(value, decimais=2):
