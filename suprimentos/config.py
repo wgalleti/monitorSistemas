@@ -1,7 +1,7 @@
 body = """
     <h1>Pendências de Entrega</h1>
     Olá <b>{fornecedor}</b>, encontramos algumas ordens de compras com {pendencias} pendência(s). 
-    Favor entrar em contato para solucionar com o <a href="mailto:gilberto.bonfim@gruposcheffer.com.br">Gilberto</a>.
+    Favor entrar em contato para solucionar com o <a href="mailto:compras@scheffer.agr.br">Departamento de Compras</a>.
     <br>
     <br>
     <br>
