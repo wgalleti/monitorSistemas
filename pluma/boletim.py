@@ -149,7 +149,7 @@ class Boletim:
 
         conteudo = body.format(tabela_resumo=self.template_resumo,
                                tabela_detalhes=self.template_detalhe)
-        to = 'rogerio.cardoso@scheffer.agr.br;celio.sampaio@scheffer.agr.br;william.galleti@scheffer.agr.br'
+        to = 'informativo.algodao@scheffer.agr.br;william.galleti@scheffer.agr.br'
         # to = 'william.galleti@scheffer.agr.br'
         subject = 'Qualidade de Beneficiamento - Boletim Diario'
 
